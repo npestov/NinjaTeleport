@@ -6,36 +6,36 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/ITTERATION 2/with AI/StartScene.unity
+    path: Assets/Scenes/Levels in build/StartScene.unity
     guid: fa965b66663df45ae8c23a05fecd98e6
   - enabled: 1
-    path: Assets/Scenes/ITTERATION 2/with AI/1.unity
+    path: Assets/Scenes/Levels in build/1.unity
     guid: 678b9a574ac564a92847b64ceb61a0a7
   - enabled: 1
-    path: Assets/Scenes/ITTERATION 2/with AI/2.unity
+    path: Assets/Scenes/Levels in build/2.unity
     guid: 8fe977d66afaf4f15822cdc37ab95df2
   - enabled: 1
-    path: Assets/Scenes/ITTERATION 2/with AI/3.unity
+    path: Assets/Scenes/Levels in build/3.unity
     guid: d30f447d3394a41a89416f1a590c7e96
   - enabled: 1
-    path: Assets/Scenes/ITTERATION 2/with AI/4.unity
+    path: Assets/Scenes/Levels in build/4.unity
     guid: 6abaa2b52aefc4d408991a0319b39125
   - enabled: 1
-    path: Assets/Scenes/ITTERATION 2/with AI/5.unity
+    path: Assets/Scenes/Levels in build/5.unity
     guid: 5d95f9a890a8348418bbc60870e9b3fa
   - enabled: 1
-    path: Assets/Scenes/ITTERATION 2/with AI/6.unity
+    path: Assets/Scenes/Levels in build/6.unity
     guid: 22b8b475549be43eb866b3e66a3a9917
   - enabled: 1
-    path: Assets/Scenes/ITTERATION 2/with AI/7.unity
+    path: Assets/Scenes/Levels in build/7.unity
     guid: ac6c6770c105143c2b332039af76d27a
   - enabled: 1
-    path: Assets/Scenes/ITTERATION 2/with AI/9.unity
+    path: Assets/Scenes/Levels in build/9.unity
     guid: 07931f3ed00864c1091f727949e6ba5f
   - enabled: 1
-    path: Assets/Scenes/ITTERATION 2/with AI/11.unity
+    path: Assets/Scenes/Levels in build/11.unity
     guid: bca0d3862fa3a4d7dbdae0d1f7f4ae24
   - enabled: 1
-    path: Assets/Scenes/ITTERATION 2/with AI/n.unity
+    path: Assets/Scenes/Levels in build/n.unity
     guid: bf54e2701de5140c6a5d016b67980ee9
   m_configObjects: {}
