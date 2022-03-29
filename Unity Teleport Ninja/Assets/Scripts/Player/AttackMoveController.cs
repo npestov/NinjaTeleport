@@ -1,25 +1,17 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using UnityEngine.UI;
-using Cinemachine;
-using System;
 using UnityEngine.Rendering.PostProcessing;
-using UnityEngine.EventSystems;
-using IndieMarc.EnemyVision;
 
 public class AttackMoveController : MonoBehaviour
 {
     public bool isAttackQueued;
 
     public GameObject enemyToKill;
-    private PlayerVision playerVision;
     private PlayerAnim playerAnim;
     private CameraController cameraController;
 
     private bool isLocked; //for rotation towards enemy, this stops once teleport happens
-    private PostProcessVolume postVolume;
     private PostProcessProfile postProfile;
 
     private Transform bonusTarget;
@@ -28,7 +20,7 @@ public class AttackMoveController : MonoBehaviour
     public float warpDuration = .5f;
 
     [Space]
-
+    //SWORD
     public Transform sword;
     public Transform swordHand;
     private Vector3 swordOrigRot;
@@ -36,27 +28,9 @@ public class AttackMoveController : MonoBehaviour
     private MeshRenderer swordMesh;
     private Vector3 swordShootOffset;
 
-    [Space]
-    public Material glowMaterial;
-
-    [Space]
-
-    [Header("Particles")]
-    public ParticleSystem blueTrail;
-    public ParticleSystem whiteTrail;
-
-    [Space]
-
-    [Header("Prefabs")]
-    public GameObject hitParticle;
-
-    [Space]
-
-    [Header("Canvas")]
-    public Vector2 uiOffset;
-
     private Vector3 bonusTargetPos;
     private float maxSwordScale = 1.7f;
+
     //temp fix
     bool doneWarp;
     Coroutine lastWarpRoutine;
@@ -73,17 +47,13 @@ public class AttackMoveController : MonoBehaviour
     void Start()
     {
         playerAnim = GetComponent<PlayerAnim>();
-        playerVision = GetComponent<PlayerVision>();
         cameraController = FindObjectOfType<CameraController>();
-        postVolume = Camera.main.GetComponent<PostProcessVolume>();
         swordOrigRot = sword.localEulerAngles;
         swordOrigPos = sword.localPosition;
         swordMesh = sword.GetComponentInChildren<MeshRenderer>();
         swordMesh.enabled = true;
         swordShootOffset = new Vector3(0, 1, 0);
         bonusTarget = GameObject.Find("BonusTarget").transform;
-
-
     }
 
     // Update is called once per frame
@@ -109,14 +79,14 @@ public class AttackMoveController : MonoBehaviour
         GameManager.Instance.UpdateGameState(GameState.Walking);
         enemyToKill.GetComponentInChildren<TargetScript>().UnHighlight();
         enemyToKill.GetComponent<AImovement>().ResetTimer();
-        currentHook = Instantiate(hookOBJ,hookParent.transform.position, Quaternion.Euler(0,0,0));
-        currentHook.transform.DOMove(enemyToKill.transform.position + swordShootOffset, 0.4f).SetEase(Ease.Linear).OnComplete(()=> PullHook());
+        currentHook = Instantiate(hookOBJ, hookParent.transform.position, Quaternion.Euler(0, 0, 0));
+        currentHook.transform.DOMove(enemyToKill.transform.position + swordShootOffset, 0.4f).SetEase(Ease.Linear).OnComplete(() => PullHook());
         currentHook.transform.DOLookAt(enemyToKill.transform.position, .2f, AxisConstraint.None);
     }
     private void PullHook()
     {
         enemyToKill.transform.parent = currentHook.transform;
-        currentHook.transform.DOMove(hookParent.transform.position + new Vector3(0,0,10), 0.2f).SetEase(Ease.Linear).OnComplete(()=>FinishedHook());
+        currentHook.transform.DOMove(hookParent.transform.position + new Vector3(0, 0, 10), 0.2f).SetEase(Ease.Linear).OnComplete(() => FinishedHook());
     }
     private void FinishedHook()
     {
@@ -146,7 +116,6 @@ public class AttackMoveController : MonoBehaviour
         //else this is called if an enemy is too close to you
         else
         {
-            Debug.Log("but i still tp lol");
             Warp();
         }
     }
@@ -195,10 +164,10 @@ public class AttackMoveController : MonoBehaviour
         transform.DOLookAt(new Vector3(enemyToKill.transform.position.x, transform.position.y, enemyToKill.transform.position.z), 0.2f);
 
         ShowBody(false);
-        transform.DOMove(enemyToKill.transform.position, warpDuration).SetEase(Ease.InExpo).OnComplete(()=> DoneWarp());
+        transform.DOMove(enemyToKill.transform.position, warpDuration).SetEase(Ease.InExpo).OnComplete(() => DoneWarp());
 
         sword.parent = null;
-        sword.DOMove(enemyToKill.transform.position + swordShootOffset, warpDuration/1.2f);
+        sword.DOMove(enemyToKill.transform.position + swordShootOffset, warpDuration / 1.2f);
         sword.DOLookAt(enemyToKill.transform.position + swordShootOffset, .2f, AxisConstraint.None);
 
         //Lens Distortion
