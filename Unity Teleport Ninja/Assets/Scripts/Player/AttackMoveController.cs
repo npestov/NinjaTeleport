@@ -52,7 +52,7 @@ public class AttackMoveController : MonoBehaviour
         swordOrigPos = sword.localPosition;
         swordMesh = sword.GetComponentInChildren<MeshRenderer>();
         swordMesh.enabled = true;
-        swordShootOffset = new Vector3(0, 1, 0);
+        swordShootOffset = new Vector3(0, 1, 5);
         bonusTarget = GameObject.Find("BonusTarget").transform;
     }
 
@@ -163,12 +163,14 @@ public class AttackMoveController : MonoBehaviour
         //rotate towards starget
         transform.DOLookAt(new Vector3(enemyToKill.transform.position.x, transform.position.y, enemyToKill.transform.position.z), 0.2f);
 
+        Vector3 tpPos = enemyToKill.transform.position + swordShootOffset;
+
         ShowBody(false);
-        transform.DOMove(enemyToKill.transform.position, warpDuration).SetEase(Ease.InExpo).OnComplete(() => DoneWarp());
+        transform.DOMove(tpPos, warpDuration).SetEase(Ease.InExpo).OnComplete(() => DoneWarp());
 
         sword.parent = null;
-        sword.DOMove(enemyToKill.transform.position + swordShootOffset, warpDuration / 1.2f);
-        sword.DOLookAt(enemyToKill.transform.position + swordShootOffset, .2f, AxisConstraint.None);
+        sword.DOMove(tpPos, warpDuration / 1.2f);
+        sword.DOLookAt(tpPos, .2f, AxisConstraint.None);
 
         //Lens Distortion
         DOVirtual.Float(0, -80, .2f, DistortionAmount);
@@ -189,6 +191,7 @@ public class AttackMoveController : MonoBehaviour
         //rotate straight
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, -180, transform.eulerAngles.z);
 
+        enemyToKill.layer = 0;
         enemyToKill.GetComponent<Animator>().SetInteger("state", 5);
         enemyToKill.GetComponentInChildren<TargetScript>().DeadHighlight();
         enemyToKill.GetComponentInChildren<TargetScript>().DeleteEnemy();

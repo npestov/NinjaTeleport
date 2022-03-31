@@ -15,7 +15,7 @@ public class HitDetection : MonoBehaviour
 
     public void CheckIfHitEnemy(RaycastHit hit)
     {
-        if (hit.transform.gameObject.GetComponentInChildren<TargetScript>() != null)
+        if (hit.transform.gameObject.GetComponentInChildren<TargetScript>() != null || hit.transform.gameObject.GetComponent<TargetScript>() != null)
         {
             foreach (TargetScript enemy in FindObjectsOfType<TargetScript>())
             {
@@ -36,9 +36,13 @@ public class HitDetection : MonoBehaviour
             hit.transform.gameObject.GetComponentInChildren<TargetScript>().HighLight();
             targetSelected = true;
             attackMoveController.enemyToKill = hit.transform.gameObject;
+
+            Debug.Log("I actuall passed to the call");
+            KillIfPossible();
         }
-        else if (attackMoveController.enemyToKill && attackMoveController.isRunnerSelected)
+        else 
         {
+            Debug.Log(hit.transform.gameObject.name);
             //uncomment to remove runner from targetting once u dont aim at him
             //attackMoveController.enemyToKill.GetComponentInChildren<TargetScript>().UnHighlight();
             //attackMoveController.enemyToKill = null;
@@ -47,6 +51,7 @@ public class HitDetection : MonoBehaviour
 
     public void KillIfPossible()
     {
+        Debug.Log("kill if possible");
         if (targetSelected && attackMoveController.enemyToKill != null)
         {
             if (!attackMoveController.isRunnerSelected)
@@ -64,6 +69,7 @@ public class HitDetection : MonoBehaviour
         }
         else
         {
+            Debug.Log("nothing");
             GameManager.Instance.UpdateGameState(GameState.Walking);
         }
     }

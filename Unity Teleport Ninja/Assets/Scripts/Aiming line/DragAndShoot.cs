@@ -17,11 +17,12 @@ public class DragAndShoot : MonoBehaviour
     private AttackMoveController attackMoveController;
     private HitDetection hitDetection;
 
-    private Vector3 startingHeightOffset = new Vector3(0,100,0);
+    private Vector3 startingHeightOffset = new Vector3(0, 100, 0);
 
     private bool firstPressDown;
 
-    // Start is called before the first frame update
+    //Arch
+    /*
     void Awake()
     {
         attackMoveController = FindObjectOfType<AttackMoveController>();
@@ -76,4 +77,29 @@ public class DragAndShoot : MonoBehaviour
         if (Input.GetMouseButton(0) && firstPressDown)
             Dragging();
     }
+    */
+
+    void Awake()
+    {
+        attackMoveController = FindObjectOfType<AttackMoveController>();
+        hitDetection = FindObjectOfType<HitDetection>();
+    }
+
+    private void Update()
+    {
+        if (GameManager.Instance.State == GameState.Walking && Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("Lol im in");
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("Enemy")))
+            {
+                hitDetection.CheckIfHitEnemy(hit);
+                return;
+            }
+        }
+    }
 }
+
