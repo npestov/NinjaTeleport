@@ -53,7 +53,7 @@ public class TutorialTwo : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         swipeTip.SetActive(true);
-        Time.timeScale = 0.2f;
+        //Time.timeScale = 0.2f;
     }
 
 

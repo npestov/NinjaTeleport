@@ -42,6 +42,8 @@ public class AttackMoveController : MonoBehaviour
     public GameObject hookOBJ;
     GameObject currentHook;
     public Transform hookParent;
+    //Bonus
+    public GameObject bonusSlicer;
 
     // Start is called before the first frame update
     void Start()
@@ -109,11 +111,7 @@ public class AttackMoveController : MonoBehaviour
         //if this is called during the bonus stage
         if (GameManager.Instance.isBonus)
         {
-            GameManager.Instance.isBonus = false;
-            sword.parent = null;
-            sword.DOMove(bonusTargetPos, 0.4f);
-            sword.DOLookAt(bonusTargetPos, .2f, AxisConstraint.None);
-            StartCoroutine(BackupWinState());
+
         }
         //else this is called if an enemy is too close to you
         else
@@ -178,6 +176,7 @@ public class AttackMoveController : MonoBehaviour
         //Lens Distortion
         DOVirtual.Float(0, -80, .2f, DistortionAmount);
         DOVirtual.Float(1, 2f, .2f, ScaleAmount);
+        GameManager.Instance.UpdateGameState(GameState.Walking);
     }
 
     //Called as oncomplete in DoTween above
@@ -201,7 +200,6 @@ public class AttackMoveController : MonoBehaviour
         //enemyToKill.GetComponentInChildren<TargetScript>().DeadHighlight();
         enemyToKill.GetComponentInChildren<TargetScript>().DeleteEnemy();
         StartCoroutine(FixSword());
-        GameManager.Instance.UpdateGameState(GameState.Walking);
     }
     //WARP END
 
@@ -222,10 +220,21 @@ public class AttackMoveController : MonoBehaviour
         DOVirtual.Float(2f, 1, .1f, ScaleAmount);
     }
 
-    public void ThrowForBonus(Vector3 targetPos)
+    public void ThrowForBonus()
     {
-        bonusTargetPos = targetPos;
         playerAnim.QuickSlash();
+
+        bonusSlicer.SetActive(true);
+        GameManager.Instance.isBonus = false;
+        StartCoroutine(ThrowDelay());
+    }
+    IEnumerator ThrowDelay()
+    {
+        Transform myBonusTarget = GameObject.Find("BonusTarget").transform;
+        yield return new WaitForSeconds(0.3f);
+        sword.parent = null;
+        sword.DOMove(myBonusTarget.position, 6f).SetEase(Ease.Linear);
+        sword.DOLookAt(myBonusTarget.position, .2f, AxisConstraint.None);
     }
 
     IEnumerator StopParticles()

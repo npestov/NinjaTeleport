@@ -246,11 +246,14 @@ namespace BzKovSoft.CharacterSlicerSamples
 			}
 
 			// set rigid bodies as non kinematic
-			StartCoroutine(KinematicDelay(go));
+			if (transform.tag != "bonus")
+				StartCoroutine(KinematicDelay(go, 0.25f));
+			else
+				StartCoroutine(KinematicDelay(go, 0));
 		}
-		IEnumerator KinematicDelay(GameObject go)
+		IEnumerator KinematicDelay(GameObject go, float delayTime)
         {
-			yield return new WaitForSeconds(0.25f);
+			yield return new WaitForSeconds(delayTime);
 			var rigidsArr = go.GetComponentsInChildren<Rigidbody>();
 			for (int i = 0; i < rigidsArr.Length; i++)
 			{

@@ -14,11 +14,19 @@ public class TimeManager : MonoBehaviour
 	}
     public void DoSlowmotion()
 	{
+		/*
 		if (FindObjectsOfType<TutorialTwo>().Length == 0)
         {
 			Time.timeScale = slowdownFactor;
 			Time.fixedDeltaTime = Time.timeScale * .02f;
 		}
+		*/
+	}
+	public void DoBonusSlowMotion()
+    {
+
+		//Time.timeScale = 0.1f;
+		//Time.fixedDeltaTime = Time.timeScale * .02f;
 	}
 
 	public void RemoveSlowMotion()

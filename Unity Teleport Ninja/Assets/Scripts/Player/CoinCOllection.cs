@@ -37,12 +37,15 @@ public class CoinCOllection : MonoBehaviour
         if (other.gameObject.CompareTag("bonus"))
         {
 
+            //old bonus target
+            /*
             attackMoveController.enemyToKill = null;
             attackMoveController.KillSwordTween();
             if (float.Parse(other.gameObject.name) > bonusMultiplier)
             {
                 bonusMultiplier = float.Parse(other.gameObject.name);
             }
+            */
         }
 
     }

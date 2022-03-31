@@ -72,6 +72,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 isFalling = true;
                 StartCoroutine(SwitchToFall());
+                Debug.Log("switched fall called");
             }
         }
     }
@@ -93,9 +94,10 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator SwitchToFall()
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.6f);
         if (!fallingActivated && GameManager.Instance.State != GameState.Killing && isFalling)
         {
+            Debug.Log("actually switched to fall");
             fallingActivated = true;
             anim.Falling();
         }

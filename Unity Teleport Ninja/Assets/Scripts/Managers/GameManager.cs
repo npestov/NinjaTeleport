@@ -153,7 +153,9 @@ public class GameManager : MonoBehaviour
         if (!enemyHasWon)
         {
             isBonus = true;
-            
+            attackMoveController.ThrowForBonus();
+            cameraController.SwitchToSwordCam();
+            timeManager.DoBonusSlowMotion();
         }
         else
         {
