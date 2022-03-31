@@ -49,6 +49,11 @@ public class PlayerAnim : MonoBehaviour
         anim.SetTrigger("falling");
     }
 
+    public void StrikeToHalf()
+    {
+        anim.SetTrigger("strike");
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         

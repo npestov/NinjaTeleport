@@ -184,6 +184,8 @@ public class AttackMoveController : MonoBehaviour
         StopCoroutine(lastWarpRoutine);
         doneWarp = true;
 
+        playerAnim.StrikeToHalf();
+
         sword.parent = swordHand;
         sword.localPosition = swordOrigPos;
         sword.localEulerAngles = swordOrigRot;
@@ -191,9 +193,9 @@ public class AttackMoveController : MonoBehaviour
         //rotate straight
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, -180, transform.eulerAngles.z);
 
-        enemyToKill.layer = 0;
+        enemyToKill.layer = 13;
         enemyToKill.GetComponent<Animator>().SetInteger("state", 5);
-        enemyToKill.GetComponentInChildren<TargetScript>().DeadHighlight();
+        //enemyToKill.GetComponentInChildren<TargetScript>().DeadHighlight();
         enemyToKill.GetComponentInChildren<TargetScript>().DeleteEnemy();
         StartCoroutine(FixSword());
 

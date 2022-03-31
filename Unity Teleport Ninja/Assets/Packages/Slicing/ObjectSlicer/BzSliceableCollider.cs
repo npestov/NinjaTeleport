@@ -107,6 +107,7 @@ namespace BzKovSoft.ObjectSlicer
 
 		private static void AddCollider(Mesh mesh, PhysicMaterial material, GameObject go)
 		{
+			return;
 			var collider = go.AddComponent<MeshCollider>();
 			collider.sharedMaterial = material;
 			collider.sharedMesh = mesh;

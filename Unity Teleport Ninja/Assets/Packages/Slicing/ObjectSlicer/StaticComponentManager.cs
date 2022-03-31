@@ -103,7 +103,6 @@ namespace BzKovSoft.ObjectSlicer
 			var action = new Action(() =>
 			{
 				Profiler.BeginSample("Action: AddCollider");
-
 				var collider = go.AddComponent<MeshCollider>();
 				collider.sharedMaterial = colliderConf.Material;
 				collider.sharedMesh = colliderConf.Mesh;

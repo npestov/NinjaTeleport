@@ -73,8 +73,8 @@ public class GameManager : MonoBehaviour
                 //inGameUI.AimingUI();
                 break;
             case GameState.Killing:
-                playerMovement.IncreaseSpeed();
-                playerAnim.IncreaseAnimSpeed();
+                //playerMovement.IncreaseSpeed();
+                //playerAnim.IncreaseAnimSpeed();
                 timeManager.RemoveSlowMotion();
                 cameraController.SwitchToWalk();
                 break;

@@ -88,7 +88,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void IncreaseSpeed()
     {
-        playerSpeed += 0.002f;
+        //playerSpeed += 0.002f;
     }
 
     IEnumerator SwitchToFall()

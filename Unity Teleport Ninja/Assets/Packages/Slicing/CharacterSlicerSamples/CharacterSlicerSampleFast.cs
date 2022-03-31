@@ -229,9 +229,10 @@ namespace BzKovSoft.CharacterSlicerSamples
 			
 
 			UnityEngine.Object.Destroy(animator);
-			UnityEngine.Object.Destroy(triggerCollider);
+			//UnityEngine.Object.Destroy(triggerCollider);
 			UnityEngine.Object.Destroy(rb);
 			UnityEngine.Object.Destroy(enemy);
+			//UnityEngine.Object.Destroy(go.GetComponent<MeshCollider>());
 
 			StartCoroutine(SmoothDepenetration(go, velocityContinue, angularVelocityContinue));
 
@@ -251,9 +252,10 @@ namespace BzKovSoft.CharacterSlicerSamples
 			{
 				var rigid = rigidsArr[i];
 				rigid.isKinematic = false;
+				rigid.velocity = UnityEngine.Random.onUnitSphere * 4.5f;
 			}
 			go.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
-			//Destroy(go, 2);
+			Destroy(go, 2);
 			Profiler.EndSample();
 		}
 

@@ -28,7 +28,7 @@ namespace IndieMarc.EnemyVision
     /// Handles enemy movement and the different enemy behaviors
     /// </summary>
 
-    [RequireComponent(typeof(Rigidbody))]
+    //[RequireComponent(typeof(Rigidbody))]
     public class Enemy : MonoBehaviour
     {
         private EnemyGun enemyGun;
