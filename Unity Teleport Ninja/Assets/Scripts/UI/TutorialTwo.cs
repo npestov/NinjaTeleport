@@ -5,7 +5,7 @@ using UnityEngine;
 public class TutorialTwo : MonoBehaviour
 {
     public GameObject swipeTip;
-    public GameObject releaseTip;
+    //public GameObject releaseTip;
 
     private AttackMoveController attackMoveController;
     bool shownSwipe;
@@ -37,11 +37,11 @@ public class TutorialTwo : MonoBehaviour
                 {
                     swipeTip.SetActive(false);
                     shownRelease = true;
-                    releaseTip.SetActive(true);
+                    //releaseTip.SetActive(true);
                 }
                 if (shownRelease && Input.GetMouseButtonUp(0))
                 {
-                    releaseTip.SetActive(false);
+                    //releaseTip.SetActive(false);
                     Time.timeScale = 1f;
                 }
             }

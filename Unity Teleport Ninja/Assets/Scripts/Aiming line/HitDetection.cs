@@ -37,7 +37,6 @@ public class HitDetection : MonoBehaviour
             targetSelected = true;
             attackMoveController.enemyToKill = hit.transform.gameObject;
 
-            Debug.Log("I actuall passed to the call");
             KillIfPossible();
         }
         else 
@@ -51,7 +50,9 @@ public class HitDetection : MonoBehaviour
 
     public void KillIfPossible()
     {
-        Debug.Log("kill if possible");
+        if (GameManager.Instance.State == GameState.Killing)
+            return;
+
         if (targetSelected && attackMoveController.enemyToKill != null)
         {
             if (!attackMoveController.isRunnerSelected)
@@ -69,7 +70,6 @@ public class HitDetection : MonoBehaviour
         }
         else
         {
-            Debug.Log("nothing");
             GameManager.Instance.UpdateGameState(GameState.Walking);
         }
     }

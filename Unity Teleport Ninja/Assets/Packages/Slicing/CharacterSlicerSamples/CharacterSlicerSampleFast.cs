@@ -220,14 +220,13 @@ namespace BzKovSoft.CharacterSlicerSamples
 
 		private void ConvertToRagdoll(GameObject go, Vector3 velocityContinue, Vector3 angularVelocityContinue, LazyActionRunner lazyRunner)
 		{
-			Profiler.BeginSample("ConvertToRagdoll");
 			// if your player is dead, you do not need animator or collision collider
 			Animator animator = go.GetComponent<Animator>();
 			Collider triggerCollider = go.GetComponent<Collider>();
 			Enemy enemy = go.GetComponent<Enemy>();
 			Rigidbody rb = go.GetComponent<Rigidbody>();
-			
 
+			Destroy(go.GetComponentInChildren<TargetScript>());
 			UnityEngine.Object.Destroy(animator);
 			//UnityEngine.Object.Destroy(triggerCollider);
 			UnityEngine.Object.Destroy(rb);
@@ -247,6 +246,11 @@ namespace BzKovSoft.CharacterSlicerSamples
 			}
 
 			// set rigid bodies as non kinematic
+			StartCoroutine(KinematicDelay(go));
+		}
+		IEnumerator KinematicDelay(GameObject go)
+        {
+			yield return new WaitForSeconds(0.25f);
 			var rigidsArr = go.GetComponentsInChildren<Rigidbody>();
 			for (int i = 0; i < rigidsArr.Length; i++)
 			{
@@ -254,9 +258,7 @@ namespace BzKovSoft.CharacterSlicerSamples
 				rigid.isKinematic = false;
 				rigid.velocity = UnityEngine.Random.onUnitSphere * 4.5f;
 			}
-			go.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
 			Destroy(go, 2);
-			Profiler.EndSample();
 		}
 
 		static IEnumerator SmoothDepenetration(GameObject go, Vector3 velocityContinue, Vector3 angularVelocityContinue)

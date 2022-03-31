@@ -172,7 +172,7 @@ public class AttackMoveController : MonoBehaviour
         transform.DOMove(tpPos, warpDuration).SetEase(Ease.InExpo).OnComplete(() => DoneWarp());
 
         sword.parent = null;
-        sword.DOMove(tpPos, warpDuration / 1.2f);
+        sword.DOMove(enemyToKill.transform.position + new Vector3(0,1.5f,0), warpDuration / 1.2f).OnComplete(()=> enemyToKill.GetComponent<Animator>().SetInteger("state", 5));
         sword.DOLookAt(tpPos, .2f, AxisConstraint.None);
 
         //Lens Distortion
@@ -198,7 +198,6 @@ public class AttackMoveController : MonoBehaviour
         transform.DORotate(new Vector3(transform.eulerAngles.x, -180, transform.eulerAngles.z), 1f);
 
         enemyToKill.layer = 13;
-        enemyToKill.GetComponent<Animator>().SetInteger("state", 5);
         //enemyToKill.GetComponentInChildren<TargetScript>().DeadHighlight();
         enemyToKill.GetComponentInChildren<TargetScript>().DeleteEnemy();
         StartCoroutine(FixSword());
