@@ -195,7 +195,7 @@ public class AttackMoveController : MonoBehaviour
         FinishAttack();
         //rotate straight
         DOTween.Kill(transform);
-        transform.DORotate(new Vector3(transform.eulerAngles.x, -180, transform.eulerAngles.z), 1f);
+        transform.DORotate(new Vector3(0, -180, 0), 1f);
 
         enemyToKill.layer = 13;
         //enemyToKill.GetComponentInChildren<TargetScript>().DeadHighlight();

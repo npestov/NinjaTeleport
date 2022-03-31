@@ -61,6 +61,6 @@ public class InGameUI : MonoBehaviour
     IEnumerator Mult()
     {
         yield return new WaitForSeconds(0.1f);
-        multiplierTxt.text = "X" + FindObjectOfType<CoinCOllection>().bonusMultiplier.ToString();
+        multiplierTxt.text = "X4.2";
     }
 }

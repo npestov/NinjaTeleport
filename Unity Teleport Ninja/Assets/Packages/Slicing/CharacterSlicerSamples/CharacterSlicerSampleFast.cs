@@ -225,12 +225,14 @@ namespace BzKovSoft.CharacterSlicerSamples
 			Collider triggerCollider = go.GetComponent<Collider>();
 			Enemy enemy = go.GetComponent<Enemy>();
 			Rigidbody rb = go.GetComponent<Rigidbody>();
+			ChaserEnemy chaserEn = go.GetComponent<ChaserEnemy>();
 
 			Destroy(go.GetComponentInChildren<TargetScript>());
 			UnityEngine.Object.Destroy(animator);
 			//UnityEngine.Object.Destroy(triggerCollider);
 			UnityEngine.Object.Destroy(rb);
 			UnityEngine.Object.Destroy(enemy);
+			Destroy(chaserEn);
 			//UnityEngine.Object.Destroy(go.GetComponent<MeshCollider>());
 
 			StartCoroutine(SmoothDepenetration(go, velocityContinue, angularVelocityContinue));
