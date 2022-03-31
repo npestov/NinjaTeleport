@@ -6003,6 +6003,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1694240997843073187, guid: 3e24dde3f06304f998d2ee95cf27d0e8,
+        type: 3}
+      propertyPath: Damping.z
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 1694240998557225192, guid: 3e24dde3f06304f998d2ee95cf27d0e8,
         type: 3}
       propertyPath: m_LocalPosition.x

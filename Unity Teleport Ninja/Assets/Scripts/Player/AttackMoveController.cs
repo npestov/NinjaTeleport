@@ -63,8 +63,10 @@ public class AttackMoveController : MonoBehaviour
             return;
 
         //Rotate towards target if in process of warping
+        /*
         if (isLocked && enemyToKill != null)
-            transform.DOLookAt(enemyToKill.transform.position, 0);
+            transform.DOLookAt(enemyToKill.transform.position, 2);
+        */
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -127,6 +129,7 @@ public class AttackMoveController : MonoBehaviour
     {
         //TEMP FIX
         doneWarp = false;
+        transform.DOLookAt(enemyToKill.transform.position, 1);
 
         GameManager.Instance.UpdateGameState(GameState.Killing);
         Kill();
@@ -152,7 +155,7 @@ public class AttackMoveController : MonoBehaviour
 
         swordMesh.enabled = true;
         //rotate toward starget
-        transform.DOLookAt(new Vector3(enemyToKill.transform.position.x, transform.position.y, enemyToKill.transform.position.z), 0.2f);
+        //transform.DOLookAt(new Vector3(enemyToKill.transform.position.x, transform.position.y, enemyToKill.transform.position.z), 0.2f);
     }
     public void Warp()
     {
@@ -191,14 +194,14 @@ public class AttackMoveController : MonoBehaviour
         sword.localEulerAngles = swordOrigRot;
         FinishAttack();
         //rotate straight
-        transform.eulerAngles = new Vector3(transform.eulerAngles.x, -180, transform.eulerAngles.z);
+        DOTween.Kill(transform);
+        transform.DORotate(new Vector3(transform.eulerAngles.x, -180, transform.eulerAngles.z), 1f);
 
         enemyToKill.layer = 13;
         enemyToKill.GetComponent<Animator>().SetInteger("state", 5);
         //enemyToKill.GetComponentInChildren<TargetScript>().DeadHighlight();
         enemyToKill.GetComponentInChildren<TargetScript>().DeleteEnemy();
         StartCoroutine(FixSword());
-
         GameManager.Instance.UpdateGameState(GameState.Walking);
     }
     //WARP END
