@@ -136,10 +136,11 @@ namespace IndieMarc.EnemyVision
         {
             if (patrol_path.Length == 0)
             {
-                anim.SetInteger("state", 1);
+                if (anim != null)
+                    anim.SetInteger("state", 1);
                 isIdle = true;
             }
-            else
+            else if (anim != null)
                 anim.SetInteger("state", 2);
 
 
@@ -188,7 +189,7 @@ namespace IndieMarc.EnemyVision
 
             if (state == EnemyState.Alert)
             {
-                if (!isShootingWalking)
+                if (!isShootingWalking && anim != null)
                     anim.SetInteger("state", 3);
 
                 UpdateAlert();
@@ -196,9 +197,9 @@ namespace IndieMarc.EnemyVision
 
             if (state == EnemyState.Patrol)
             {
-                if (isIdle)
+                if (isIdle && anim != null)
                     anim.SetInteger("state", 1);
-                else
+                else if (anim != null)
                     anim.SetInteger("state", 2);
 
                 UpdatePatrol();
@@ -206,13 +207,15 @@ namespace IndieMarc.EnemyVision
 
             if (state == EnemyState.Chase)
             {
-                anim.SetInteger("state", 4);
+                if (anim != null)
+                    anim.SetInteger("state", 4);
                 UpdateFollow();
             }
 
             if (state == EnemyState.Confused)
             {
-                anim.SetInteger("state", 3);
+                if (anim != null)
+                    anim.SetInteger("state", 3);
                 UpdateConfused();
             }
 

@@ -238,8 +238,10 @@ public class AttackMoveController : MonoBehaviour
         sword.localPosition = swordOrigPos;
         sword.localEulerAngles = swordOrigRot;
         //scale up the sword
+        /*
         if (sword.GetChild(1).localScale.x < maxSwordScale)
             sword.GetChild(1).localScale += new Vector3(0.07f, 0.07f, 0.07f);
+        */
     }
 
     private bool IsEnemyTooCLose()
