@@ -44,6 +44,7 @@ public class AttackMoveController : MonoBehaviour
     public Transform hookParent;
     //Bonus
     public GameObject bonusSlicer;
+    bool bonusThrow;
 
     // Start is called before the first frame update
     void Start()
@@ -114,7 +115,7 @@ public class AttackMoveController : MonoBehaviour
 
         }
         //else this is called if an enemy is too close to you
-        else
+        else if (!bonusThrow)
         {
             Warp();
         }
@@ -223,7 +224,7 @@ public class AttackMoveController : MonoBehaviour
     public void ThrowForBonus()
     {
         playerAnim.QuickSlash();
-
+        bonusThrow = true;
         bonusSlicer.SetActive(true);
         GameManager.Instance.isBonus = false;
         StartCoroutine(ThrowDelay());
@@ -233,7 +234,7 @@ public class AttackMoveController : MonoBehaviour
         Transform myBonusTarget = GameObject.Find("BonusTarget").transform;
         yield return new WaitForSeconds(0.3f);
         sword.parent = null;
-        sword.DOMove(myBonusTarget.position, 6f).SetEase(Ease.Linear);
+        sword.DOMove(myBonusTarget.position, 5f).SetEase(Ease.Linear).OnComplete(()=>GameManager.Instance.UpdateGameState(GameState.Victory));
         sword.DOLookAt(myBonusTarget.position, .2f, AxisConstraint.None);
     }
 

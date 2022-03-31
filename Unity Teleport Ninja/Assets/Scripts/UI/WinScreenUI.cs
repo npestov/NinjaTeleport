@@ -58,7 +58,7 @@ public class WinScreenUI : MonoBehaviour
             if (GameObject.FindObjectsOfType<InGameUI>().Length != 0)
                 FindObjectOfType<InGameUI>().gameObject.SetActive(false);
 
-            float multiplier = coinCOllection.bonusMultiplier;
+            float multiplier = 4.2f;
             int coinsEarned = coinCOllection.coinsEarned;
             if (multiplier < 1)
                 multiplier = 1;

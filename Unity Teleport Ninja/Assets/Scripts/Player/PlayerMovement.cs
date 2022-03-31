@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -79,12 +80,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("nobonus"))
+        if (other.gameObject.CompareTag("bonusWarning"))
         {
-            if (GameManager.Instance.State != GameState.Victory)
-                GameManager.Instance.UpdateGameState(GameState.Victory);
+            Destroy(other.gameObject);
+            transform.DOMoveX(GameObject.Find("BonusTarget").transform.position.x, 1);
         }
-
     }
 
     public void IncreaseSpeed()

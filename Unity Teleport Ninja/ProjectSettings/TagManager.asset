@@ -17,6 +17,7 @@ TagManager:
   - floor
   - nobonus
   - Runner
+  - bonusWarning
   layers:
   - Default
   - TransparentFX
