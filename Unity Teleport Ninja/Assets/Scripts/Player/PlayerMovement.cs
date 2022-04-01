@@ -93,7 +93,7 @@ public class PlayerMovement : MonoBehaviour
         if (other.gameObject.CompareTag("bonusWarning"))
         {
             Destroy(other.gameObject);
-            transform.DOMoveX(GameObject.Find("BonusTarget").transform.position.x, 0.7f);
+            transform.DOMoveX(GameObject.Find("BonusTarget").transform.position.x + 1, 0.7f);
         }
     }
 

@@ -58,7 +58,7 @@ public class AttackMoveController : MonoBehaviour
         swordOrigPos = sword.localPosition;
         swordMesh = sword.GetComponentInChildren<MeshRenderer>();
         swordMesh.enabled = true;
-        swordShootOffset = new Vector3(0, Y_OFFSET, 5);
+        swordShootOffset = new Vector3(0, Y_OFFSET, 0);
         bonusTarget = GameObject.Find("BonusTarget").transform;
     }
 
@@ -78,6 +78,7 @@ public class AttackMoveController : MonoBehaviour
         {
             GrapplingHook();
         }
+        
     }
 
 
@@ -137,6 +138,7 @@ public class AttackMoveController : MonoBehaviour
         Kill();
         isLocked = true;
 
+        playerAnim.ResetAnims();
         //Check weather to quick slash or to do a proper warp
         if (IsEnemyTooCLose())
         {
@@ -168,22 +170,24 @@ public class AttackMoveController : MonoBehaviour
         //rotate towards starget
         transform.DOLookAt(new Vector3(enemyToKill.transform.position.x, transform.position.y, enemyToKill.transform.position.z), 0.2f);
 
-        Vector3 tpPos = enemyToKill.transform.position + swordShootOffset;
 
-        ShowBody(false);
-        transform.DOMove(tpPos - new Vector3(0, Y_OFFSET, 0), warpDuration).SetEase(Ease.InExpo).OnComplete(() => DoneWarp());
-
-        Vector3 swordTpPos = enemyToKill.transform.position + new Vector3(Random.Range(-0.02f, 0.02f), 1.5f);
+        Vector3 swordTpPos = enemyToKill.transform.position + swordShootOffset;
+        // + new Vector3(Random.Range(-0.02f, 0.02f), 1.5f);
         sword.parent = null;
         sword.DOMove(swordTpPos, warpDuration / 1.2f).OnComplete(()=> enemyToKill.GetComponent<Animator>().SetInteger("state", 5));
         sword.DOLookAt(swordTpPos, .2f, AxisConstraint.None);
 
+        Vector3 tpPos = enemyToKill.transform.position + new Vector3(0,Y_OFFSET,5);
+
+        ShowBody(false);
+        transform.DOMove(tpPos - new Vector3(0, Y_OFFSET, 0), warpDuration).SetEase(Ease.InExpo).OnComplete(() => DoneWarp());
         //Lens Distortion
         DOVirtual.Float(0, -80, .2f, DistortionAmount);
         DOVirtual.Float(1, 2f, .2f, ScaleAmount);
 
         enemyToKill.layer = 13;
         GameManager.Instance.UpdateGameState(GameState.Walking);
+
     }
 
     //Called as oncomplete in DoTween above
@@ -240,7 +244,7 @@ public class AttackMoveController : MonoBehaviour
         Transform myBonusTarget = GameObject.Find("BonusTarget").transform;
         yield return new WaitForSeconds(0.3f);
         sword.parent = null;
-        sword.DOMove(myBonusTarget.position, Mathf.Sqrt(endingBonus.targetIndex * 1.5f)).SetEase(Ease.InSine).OnComplete(() => BonusComplete());
+        sword.DOMove(myBonusTarget.position, Mathf.Sqrt(endingBonus.targetIndex * 1.5f)).SetEase(Ease.InOutSine).OnComplete(() => BonusComplete());
         sword.DOLookAt(myBonusTarget.position, .2f, AxisConstraint.None);
     }
 

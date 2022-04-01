@@ -68,4 +68,10 @@ public class PlayerAnim : MonoBehaviour
         }
 
     }
+
+    public void ResetAnims()
+    {
+        anim.ResetTrigger("run");
+        anim.ResetTrigger("falling");
+    }
 }
