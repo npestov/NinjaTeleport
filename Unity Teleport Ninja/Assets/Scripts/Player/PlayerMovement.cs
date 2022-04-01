@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -10,6 +11,12 @@ public class PlayerMovement : MonoBehaviour
     private PlayerAnim anim;
     bool isFalling;
     bool fallingActivated;
+
+    //Side to side
+    [SerializeField]
+    float sideSpeed;
+    Vector3 lastClickPos;
+
 
     // Start is called before the first frame update
     void Awake()
@@ -27,24 +34,28 @@ public class PlayerMovement : MonoBehaviour
     {
         if (GameManager.Instance.isBonus)
         {
-            Debug.Log("BONUS");
             return;
         }
 
         if (GameManager.Instance.State == GameState.Walking || GameManager.Instance.State == GameState.Aiming)
         {
-            transform.position += new Vector3(0, 0, -playerSpeed);
+            Move();
+            //transform.position += new Vector3(0, 0, -playerSpeed);
         }
         if (GameManager.Instance.State == GameState.Killing)
         {
-            transform.position += new Vector3(0, 0, -playerSpeed/1.2f);
+            Move();
+            //transform.position += new Vector3(0, 0, -playerSpeed/1.2f);
         }
 
 
     }
     private void Update()
     {
-
+        if (Input.GetMouseButtonDown(0))
+        {
+            lastClickPos = Input.mousePosition;
+        }
     }
 
     private void OnCollisionStay(Collision collision)
@@ -99,5 +110,36 @@ public class PlayerMovement : MonoBehaviour
             fallingActivated = true;
             anim.Falling();
         }
+    }
+
+    void Move()
+    {
+        //Move less if killing
+        Vector3 deltaPosition;
+        if (GameManager.Instance.State == GameState.Killing)
+            deltaPosition = transform.forward * playerSpeed / 1.2f;
+        else
+            deltaPosition = transform.forward * playerSpeed;
+
+        //SIDE TO SIDE START, comment this
+        /*
+        if (Input.GetMouseButton(0) && GameManager.Instance.State != GameState.Killing)
+        {
+            Vector3 touchPosition = Input.mousePosition;
+            if (touchPosition.x > lastClickPos.x * 0.5f)
+                deltaPosition += transform.right * sideSpeed * Mathf.Sqrt(Mathf.Abs(lastClickPos.x- touchPosition.x));
+            else
+                deltaPosition -= transform.right * sideSpeed * Mathf.Sqrt(Mathf.Abs(lastClickPos.x - touchPosition.x));
+        }
+       
+        if (deltaPosition.x != float.NaN && deltaPosition.x != float.PositiveInfinity && deltaPosition.x != float.NegativeInfinity)
+        { 
+            transform.position += deltaPosition * Time.deltaTime;
+        }
+         */
+        //uncomment if not using side
+        transform.position += deltaPosition * Time.deltaTime;
+        //SIDE TO SIDE END
+
     }
 }

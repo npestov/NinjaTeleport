@@ -76,7 +76,7 @@ public class ChaserEnemy : MonoBehaviour
 
     bool IsPlayerTooClose()
     {
-        if (Vector3.Distance(player.transform.position, transform.position) < 2 && GameManager.Instance.State != GameState.Killing)
+        if (Vector3.Distance(player.transform.position, transform.position) < 2 && GameManager.Instance.State != GameState.Killing && transform.gameObject.layer != 13)
         {
             return true;
         }

@@ -179,6 +179,8 @@ public class AttackMoveController : MonoBehaviour
         //Lens Distortion
         DOVirtual.Float(0, -80, .2f, DistortionAmount);
         DOVirtual.Float(1, 2f, .2f, ScaleAmount);
+
+        enemyToKill.layer = 13;
         GameManager.Instance.UpdateGameState(GameState.Walking);
     }
 
@@ -199,7 +201,6 @@ public class AttackMoveController : MonoBehaviour
         DOTween.Kill(transform);
         transform.DORotate(new Vector3(0, -180, 0), 1f);
 
-        enemyToKill.layer = 13;
         //enemyToKill.GetComponentInChildren<TargetScript>().DeadHighlight();
         enemyToKill.GetComponentInChildren<TargetScript>().DeleteEnemy();
         StartCoroutine(FixSword());
@@ -242,7 +243,7 @@ public class AttackMoveController : MonoBehaviour
 
     void BonusComplete()
     {
-        Destroy(sword);
+        Destroy(sword.gameObject);
         GameManager.Instance.UpdateGameState(GameState.Victory);
     }
 
