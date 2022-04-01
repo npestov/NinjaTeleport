@@ -25,8 +25,9 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Input.GetKey(KeyCode.S))
+        if (GameManager.Instance.isBonus)
         {
+            Debug.Log("BONUS");
             return;
         }
 
@@ -55,7 +56,6 @@ public class PlayerMovement : MonoBehaviour
                 fallingActivated = false;
                 isFalling = false;
                 anim.Run();
-                Debug.Log("switched to run");
             }
         }
 
@@ -73,7 +73,6 @@ public class PlayerMovement : MonoBehaviour
             {
                 isFalling = true;
                 StartCoroutine(SwitchToFall());
-                Debug.Log("switched fall called");
             }
         }
     }
@@ -97,7 +96,6 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(0.6f);
         if (!fallingActivated && GameManager.Instance.State != GameState.Killing && isFalling)
         {
-            Debug.Log("actually switched to fall");
             fallingActivated = true;
             anim.Falling();
         }

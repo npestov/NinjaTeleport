@@ -14,6 +14,7 @@ public class WinScreenUI : MonoBehaviour
     private TextMeshProUGUI addedCoins;
     private CoinCOllection coinCOllection;
     bool displayedOnce;
+    EndingBonus endingBonus;
 
     // Start is called before the first frame update
     void Awake()
@@ -21,6 +22,7 @@ public class WinScreenUI : MonoBehaviour
         btnNext.onClick.AddListener(NextClicked);
         container = gameObject.transform.GetChild(0).gameObject;
         coinCOllection = FindObjectOfType<CoinCOllection>();
+        endingBonus = FindObjectOfType<EndingBonus>();
     }
 
     // Update is called once per frame
@@ -31,6 +33,7 @@ public class WinScreenUI : MonoBehaviour
 
     private void NextClicked()
     {
+        PlayerPrefs.SetFloat("sharpness", PlayerPrefs.GetFloat("sharpness") + 1);
         //this is so that the levels loop
         int levelIndex = (PlayerPrefs.GetInt("lvl") + 1);
         if (levelIndex == 1)
@@ -58,7 +61,7 @@ public class WinScreenUI : MonoBehaviour
             if (GameObject.FindObjectsOfType<InGameUI>().Length != 0)
                 FindObjectOfType<InGameUI>().gameObject.SetActive(false);
 
-            float multiplier = 4.2f;
+            float multiplier = endingBonus.finalMultiplier;
             int coinsEarned = coinCOllection.coinsEarned;
             if (multiplier < 1)
                 multiplier = 1;

@@ -10,6 +10,7 @@ public class AttackMoveController : MonoBehaviour
     public GameObject enemyToKill;
     private PlayerAnim playerAnim;
     private CameraController cameraController;
+    private EndingBonus endingBonus;
 
     private bool isLocked; //for rotation towards enemy, this stops once teleport happens
     private PostProcessProfile postProfile;
@@ -51,6 +52,7 @@ public class AttackMoveController : MonoBehaviour
     {
         playerAnim = GetComponent<PlayerAnim>();
         cameraController = FindObjectOfType<CameraController>();
+        endingBonus = FindObjectOfType<EndingBonus>();
         swordOrigRot = sword.localEulerAngles;
         swordOrigPos = sword.localPosition;
         swordMesh = sword.GetComponentInChildren<MeshRenderer>();
@@ -226,7 +228,7 @@ public class AttackMoveController : MonoBehaviour
         playerAnim.QuickSlash();
         bonusThrow = true;
         bonusSlicer.SetActive(true);
-        GameManager.Instance.isBonus = false;
+        //GameManager.Instance.isBonus = false;
         StartCoroutine(ThrowDelay());
     }
     IEnumerator ThrowDelay()
@@ -234,8 +236,14 @@ public class AttackMoveController : MonoBehaviour
         Transform myBonusTarget = GameObject.Find("BonusTarget").transform;
         yield return new WaitForSeconds(0.3f);
         sword.parent = null;
-        sword.DOMove(myBonusTarget.position, 5f).SetEase(Ease.Linear).OnComplete(()=>GameManager.Instance.UpdateGameState(GameState.Victory));
+        sword.DOMove(myBonusTarget.position, Mathf.Sqrt(endingBonus.targetIndex * 2f)).SetEase(Ease.Linear).OnComplete(() => BonusComplete());
         sword.DOLookAt(myBonusTarget.position, .2f, AxisConstraint.None);
+    }
+
+    void BonusComplete()
+    {
+        Destroy(sword);
+        GameManager.Instance.UpdateGameState(GameState.Victory);
     }
 
     IEnumerator StopParticles()

@@ -23,7 +23,10 @@ public class PlayerAnim : MonoBehaviour
 
     public void Run()
     {
-        anim.SetTrigger("run");
+        if (!GameManager.Instance.isBonus)
+            anim.SetTrigger("run");
+        else
+            Idle();
     }
     public void Idle()
     {
@@ -46,7 +49,10 @@ public class PlayerAnim : MonoBehaviour
 
     public void Falling()
     {
-        anim.SetTrigger("falling");
+        if (!GameManager.Instance.isBonus)
+            anim.SetTrigger("falling");
+        else
+            Idle();
     }
 
     public void StrikeToHalf()

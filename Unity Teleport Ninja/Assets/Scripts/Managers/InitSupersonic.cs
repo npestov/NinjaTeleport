@@ -43,6 +43,8 @@ public class InitSupersonic : MonoBehaviour
         int sceneToLoad = PlayerPrefs.GetInt("lvl", 1) % SceneManager.sceneCountInBuildSettings;
         if (sceneToLoad == 0)
             PlayerPrefs.SetInt("lvl", PlayerPrefs.GetInt("lvl") + 1);
+        if (PlayerPrefs.GetFloat("sharpness") < 3)
+            PlayerPrefs.SetFloat("sharpness", 3);
 
         SceneManager.LoadScene(sceneToLoad);
     }
