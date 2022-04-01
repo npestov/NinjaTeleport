@@ -12,11 +12,6 @@ public class AttackMoveController : MonoBehaviour
     private CameraController cameraController;
     private EndingBonus endingBonus;
 
-    private bool isLocked; //for rotation towards enemy, this stops once teleport happens
-    private PostProcessProfile postProfile;
-
-    private Transform bonusTarget;
-
     [Space]
     public float warpDuration = .5f;
 
@@ -30,13 +25,6 @@ public class AttackMoveController : MonoBehaviour
     private Vector3 swordShootOffset;
     private float Y_OFFSET = 1;
 
-    private Vector3 bonusTargetPos;
-    private float maxSwordScale = 1.7f;
-
-    //temp fix
-    bool doneWarp;
-    Coroutine lastWarpRoutine;
-
     //HOOKING
     [Space]
 
@@ -46,42 +34,23 @@ public class AttackMoveController : MonoBehaviour
     public Transform hookParent;
     //Bonus
     public GameObject bonusSlicer;
-    bool bonusThrow;
     Rigidbody rb;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         playerAnim = GetComponent<PlayerAnim>();
         cameraController = FindObjectOfType<CameraController>();
         endingBonus = FindObjectOfType<EndingBonus>();
+        swordMesh = sword.GetComponentInChildren<MeshRenderer>();
+    }
+    void Start()
+    {
         swordOrigRot = sword.localEulerAngles;
         swordOrigPos = sword.localPosition;
-        swordMesh = sword.GetComponentInChildren<MeshRenderer>();
         swordMesh.enabled = true;
         swordShootOffset = new Vector3(0, Y_OFFSET, 0);
-        bonusTarget = GameObject.Find("BonusTarget").transform;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (GameManager.Instance.State == GameState.Victory)
-            return;
-
-        //Rotate towards target if in process of warping
-        /*
-        if (isLocked && enemyToKill != null)
-            transform.DOLookAt(enemyToKill.transform.position, 2);
-        */
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            GrapplingHook();
-        }
-        
-    }
-
 
     //HOOK
     public void GrapplingHook()
@@ -106,116 +75,70 @@ public class AttackMoveController : MonoBehaviour
     }
     //END HOOK
 
-    //QUICK SLASH
-
-    //gets called by animator
-    public void Slash()
-    {
-        //transform.DOLookAt(new Vector3(bonusTargetPos.x,transform.position.y, bonusTargetPos.z), 0.3f);
-        //isLocked = true;
-
-        //if this is called during the bonus stage
-        if (GameManager.Instance.isBonus)
-        {
-
-        }
-        //else this is called if an enemy is too close to you
-        else if (!bonusThrow)
-        {
-            Warp();
-        }
-    }
-
-    //QUICK SLASH END
 
     //WARP START
     public void WarpKill()
     {
         //TEMP FIX
-        doneWarp = false;
         transform.DOLookAt(enemyToKill.transform.position, 1);
 
         GameManager.Instance.UpdateGameState(GameState.Killing);
-        Kill();
-        isLocked = true;
+        swordMesh.enabled = true;
 
         playerAnim.ResetAnims();
         //Check weather to quick slash or to do a proper warp
         if (IsEnemyTooCLose())
         {
-            lastWarpRoutine = StartCoroutine(BackupWarpAnim(true));
             playerAnim.QuickSlash();
         }
         else
         {
-            lastWarpRoutine = StartCoroutine(BackupWarpAnim(false));
             playerAnim.WarpAnim();
         }
     }
 
-    public void Kill()
-    {
-        //enemyToKill.transform.parent.tag = "KilledTarget";
-        //enemyToKill.GetComponentInChildren<TargetScript>().RemoveTarget();
-
-        swordMesh.enabled = true;
-        //rotate toward starget
-        //transform.DOLookAt(new Vector3(enemyToKill.transform.position.x, transform.position.y, enemyToKill.transform.position.z), 0.2f);
-    }
     public void Warp()
     {
-        if (GameManager.Instance.State == GameState.Lose)
+        if (GameManager.Instance.State == GameState.Lose || GameManager.Instance.isBonus)
             return;
 
-        isLocked = false;
         //rotate towards starget
         transform.DOLookAt(new Vector3(enemyToKill.transform.position.x, transform.position.y, enemyToKill.transform.position.z), 0.2f);
-
 
         Vector3 swordTpPos = enemyToKill.transform.position + swordShootOffset;
         // + new Vector3(Random.Range(-0.02f, 0.02f), 1.5f);
         sword.parent = null;
-        sword.DOMove(swordTpPos, warpDuration / 1.2f).OnComplete(()=> SwordDoneFlying());
+        sword.DOMove(swordTpPos, warpDuration / 1.2f).OnComplete(() => SwordDoneFlying());
         sword.DOLookAt(swordTpPos, .2f, AxisConstraint.None);
 
-        Vector3 tpPos = enemyToKill.transform.position + new Vector3(0,Y_OFFSET,5);
+        Vector3 tpPos = enemyToKill.transform.position + new Vector3(0, Y_OFFSET, 5);
 
         ShowBody(false);
         transform.DOMove(tpPos - new Vector3(0, Y_OFFSET, 0), warpDuration).SetEase(Ease.InExpo).OnComplete(() => DoneWarp());
-        //Lens Distortion
-        DOVirtual.Float(0, -80, .2f, DistortionAmount);
-        DOVirtual.Float(1, 2f, .2f, ScaleAmount);
 
         enemyToKill.layer = 13;
         GameManager.Instance.UpdateGameState(GameState.Walking);
 
     }
 
-    //Called as oncomplete in DoTween above
     void DoneWarp()
     {
         //TEMP FIX
-        StopCoroutine(lastWarpRoutine);
-        doneWarp = true;
-
-        //rb.constraints = RigidbodyConstraints.FreezePositionY;
-
         playerAnim.StrikeToHalf();
-
-        FinishAttack();
+        ShowBody(true);
         //rotate straight
         DOTween.Kill(transform);
         transform.DORotate(new Vector3(0, -180, 0), 1f);
         enemyToKill.GetComponent<Animator>().SetInteger("state", 5);
-        //enemyToKill.GetComponentInChildren<TargetScript>().DeadHighlight();
         enemyToKill.GetComponentInChildren<TargetScript>().DeleteEnemy();
+
         StartCoroutine(FixSword());
+        cameraController.ShakeCam();
     }
 
     void SwordDoneFlying()
     {
-        //enemyToKill.GetComponent<Animator>().SetInteger("state", 5);
-        sword.DOMoveZ(sword.transform.position.x - 3, 0.1f).OnComplete(()=> SwordBackInHand());
+        sword.DOMoveZ(sword.transform.position.x - 3, 0.1f).OnComplete(() => SwordBackInHand());
         sword.DORotate(new Vector3(0, -180, 0), 0.05f);
     }
     void SwordBackInHand()
@@ -224,67 +147,21 @@ public class AttackMoveController : MonoBehaviour
         sword.localPosition = swordOrigPos;
         sword.localEulerAngles = swordOrigRot;
     }
+
     //WARP END
-
-    //Called as oncomplete in DoTween above
-
-
-    void FinishAttack()
-    {
-        ShowBody(true);
-
-        
-        isLocked = false;
-        //Shake
-        cameraController.ShakeCam();
-
-        //Lens Distortion
-        DOVirtual.Float(-80, 0, .2f, DistortionAmount);
-        DOVirtual.Float(2f, 1, .1f, ScaleAmount);
-    }
 
     public void ThrowForBonus()
     {
         playerAnim.QuickSlash();
-        bonusThrow = true;
         Destroy(GameObject.Find("Slicer"));
         bonusSlicer.SetActive(true);
-        //GameManager.Instance.isBonus = false;
         StartCoroutine(ThrowDelay());
-    }
-    IEnumerator ThrowDelay()
-    {
-        Transform myBonusTarget = GameObject.Find("BonusTarget").transform;
-        yield return new WaitForSeconds(0.3f);
-        sword.parent = null;
-        sword.DOMove(myBonusTarget.position, Mathf.Sqrt(endingBonus.targetIndex * 1.5f)).SetEase(Ease.InOutSine).OnComplete(() => BonusComplete());
-        sword.DOLookAt(myBonusTarget.position, .2f, AxisConstraint.None);
     }
 
     void BonusComplete()
     {
         Destroy(sword.gameObject);
         GameManager.Instance.UpdateGameState(GameState.Victory);
-    }
-
-    IEnumerator StopParticles()
-    {
-        yield return new WaitForSeconds(.2f);
-        //blueTrail.Stop();
-        //whiteTrail.Stop();
-    }
-
-    IEnumerator FixSword()
-    {
-        yield return new WaitForSeconds(.2f);
-        sword.parent = swordHand;
-        sword.localPosition = swordOrigPos;
-        sword.localEulerAngles = swordOrigRot;
-        //scale up the sword
-        /*
-        if (sword.GetChild(1).localScale.x < maxSwordScale)
-            sword.GetChild(1).localScale += new Vector3(0.07f, 0.07f, 0.07f);
-        */
     }
 
     private bool IsEnemyTooCLose()
@@ -305,51 +182,20 @@ public class AttackMoveController : MonoBehaviour
         }
     }
 
-    void GlowAmount(float x)
+    IEnumerator FixSword()
     {
-        SkinnedMeshRenderer[] skinMeshList = GetComponentsInChildren<SkinnedMeshRenderer>();
-        foreach (SkinnedMeshRenderer smr in skinMeshList)
-        {
-            smr.material.SetVector("_FresnelAmount", new Vector4(x, x, x, x));
-        }
+        yield return new WaitForSeconds(.2f);
+        sword.parent = swordHand;
+        sword.localPosition = swordOrigPos;
+        sword.localEulerAngles = swordOrigRot;
     }
 
-    void DistortionAmount(float x)
+    IEnumerator ThrowDelay()
     {
-        postProfile.GetSetting<LensDistortion>().intensity.value = x;
-    }
-    void ScaleAmount(float x)
-    {
-        postProfile.GetSetting<LensDistortion>().scale.value = x;
-    }
-
-    public void KillSwordTween()
-    {
-        DOTween.Kill(sword);
-        sword.parent = bonusTarget;
-        GameManager.Instance.UpdateGameState(GameState.Victory);
-    }
-
-    IEnumerator BackupWinState()
-    {
-        yield return new WaitForSeconds(0.5f);
-        if (GameManager.Instance.State != GameState.Victory)
-            GameManager.Instance.UpdateGameState(GameState.Victory);
-    }
-    IEnumerator BackupWarpAnim(bool isQuick)
-    {
-        if (isLocked && !doneWarp)
-        {
-            if (isQuick)
-            {
-                yield return new WaitForSeconds(1f);
-                playerAnim.QuickSlash();
-            }
-            else
-            {
-                yield return new WaitForSeconds(2f);
-                playerAnim.WarpAnim();
-            }
-        }
+        Transform myBonusTarget = GameObject.Find("BonusTarget").transform;
+        yield return new WaitForSeconds(0.3f);
+        sword.parent = null;
+        sword.DOMove(myBonusTarget.position, Mathf.Sqrt(endingBonus.targetIndex * 1.5f)).SetEase(Ease.InOutSine).OnComplete(() => BonusComplete());
+        sword.DOLookAt(myBonusTarget.position, .2f, AxisConstraint.None);
     }
 }

@@ -101,7 +101,6 @@ namespace BzKovSoft.CharacterSlicerSamples
 
 		private void ConvertToRagdoll(GameObject resultNeg, GameObject resultPos, LazyActionRunner lazyRunnerNeg, LazyActionRunner lazyRunnerPos)
 		{
-            UnityEngine.Debug.Log("CUT: " + gameObject.name);
 			Animator animator = this.GetComponent<Animator>();
 			Vector3 velocityContinue = animator.velocity;
 			Vector3 angularVelocityContinue = animator.angularVelocity;
