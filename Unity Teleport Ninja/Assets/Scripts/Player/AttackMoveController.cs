@@ -28,6 +28,7 @@ public class AttackMoveController : MonoBehaviour
     private Vector3 swordOrigPos;
     private MeshRenderer swordMesh;
     private Vector3 swordShootOffset;
+    private float Y_OFFSET = 1;
 
     private Vector3 bonusTargetPos;
     private float maxSwordScale = 1.7f;
@@ -57,7 +58,7 @@ public class AttackMoveController : MonoBehaviour
         swordOrigPos = sword.localPosition;
         swordMesh = sword.GetComponentInChildren<MeshRenderer>();
         swordMesh.enabled = true;
-        swordShootOffset = new Vector3(0, 1, 5);
+        swordShootOffset = new Vector3(0, Y_OFFSET, 5);
         bonusTarget = GameObject.Find("BonusTarget").transform;
     }
 
@@ -170,11 +171,12 @@ public class AttackMoveController : MonoBehaviour
         Vector3 tpPos = enemyToKill.transform.position + swordShootOffset;
 
         ShowBody(false);
-        transform.DOMove(tpPos, warpDuration).SetEase(Ease.InExpo).OnComplete(() => DoneWarp());
+        transform.DOMove(tpPos - new Vector3(0, Y_OFFSET, 0), warpDuration).SetEase(Ease.InExpo).OnComplete(() => DoneWarp());
 
+        Vector3 swordTpPos = enemyToKill.transform.position + new Vector3(Random.Range(-0.02f, 0.02f), 1.5f);
         sword.parent = null;
-        sword.DOMove(enemyToKill.transform.position + new Vector3(0,1.5f,0), warpDuration / 1.2f).OnComplete(()=> enemyToKill.GetComponent<Animator>().SetInteger("state", 5));
-        sword.DOLookAt(tpPos, .2f, AxisConstraint.None);
+        sword.DOMove(swordTpPos, warpDuration / 1.2f).OnComplete(()=> enemyToKill.GetComponent<Animator>().SetInteger("state", 5));
+        sword.DOLookAt(swordTpPos, .2f, AxisConstraint.None);
 
         //Lens Distortion
         DOVirtual.Float(0, -80, .2f, DistortionAmount);
@@ -200,7 +202,7 @@ public class AttackMoveController : MonoBehaviour
         //rotate straight
         DOTween.Kill(transform);
         transform.DORotate(new Vector3(0, -180, 0), 1f);
-
+        enemyToKill.GetComponent<Animator>().SetInteger("state", 5);
         //enemyToKill.GetComponentInChildren<TargetScript>().DeadHighlight();
         enemyToKill.GetComponentInChildren<TargetScript>().DeleteEnemy();
         StartCoroutine(FixSword());
@@ -228,6 +230,7 @@ public class AttackMoveController : MonoBehaviour
     {
         playerAnim.QuickSlash();
         bonusThrow = true;
+        Destroy(GameObject.Find("Slicer"));
         bonusSlicer.SetActive(true);
         //GameManager.Instance.isBonus = false;
         StartCoroutine(ThrowDelay());
@@ -237,7 +240,7 @@ public class AttackMoveController : MonoBehaviour
         Transform myBonusTarget = GameObject.Find("BonusTarget").transform;
         yield return new WaitForSeconds(0.3f);
         sword.parent = null;
-        sword.DOMove(myBonusTarget.position, Mathf.Sqrt(endingBonus.targetIndex * 2f)).SetEase(Ease.Linear).OnComplete(() => BonusComplete());
+        sword.DOMove(myBonusTarget.position, Mathf.Sqrt(endingBonus.targetIndex * 1.5f)).SetEase(Ease.InSine).OnComplete(() => BonusComplete());
         sword.DOLookAt(myBonusTarget.position, .2f, AxisConstraint.None);
     }
 
