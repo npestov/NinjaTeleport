@@ -181,7 +181,7 @@ namespace IndieMarc.EnemyVision
 
         private void Update()
         {
-            if (paused || targetScript.isDead)
+            if (paused || targetScript.isDead || gameObject.layer == 13)
                 return;
 
             state_timer += Time.deltaTime;

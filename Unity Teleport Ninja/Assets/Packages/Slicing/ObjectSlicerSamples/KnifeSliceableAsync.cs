@@ -54,5 +54,6 @@ namespace BzKovSoft.ObjectSlicerSamples
 			Vector3 collisionPoint = knife.Origin + proj;
 			return collisionPoint;
 		}
+
 	}
 }

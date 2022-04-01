@@ -42,13 +42,13 @@ public class ChaserEnemy : MonoBehaviour
     private void Chasing()
     {
         m_PlayerPosition = player.transform.position;
-        if (CanReachPosition(m_PlayerPosition))
+        if (CanReachPosition(m_PlayerPosition) && gameObject.layer != 13)
         {
             Move(speedRun);
             anim.SetInteger("state", 6);
             navMeshAgent.SetDestination(m_PlayerPosition);
         }
-        else
+        else if (gameObject.layer != 13)
         {
             anim.SetInteger("state", 7);
         }

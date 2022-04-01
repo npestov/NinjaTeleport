@@ -47,6 +47,7 @@ public class AttackMoveController : MonoBehaviour
     //Bonus
     public GameObject bonusSlicer;
     bool bonusThrow;
+    Rigidbody rb;
 
     // Start is called before the first frame update
     void Start()
@@ -174,7 +175,7 @@ public class AttackMoveController : MonoBehaviour
         Vector3 swordTpPos = enemyToKill.transform.position + swordShootOffset;
         // + new Vector3(Random.Range(-0.02f, 0.02f), 1.5f);
         sword.parent = null;
-        sword.DOMove(swordTpPos, warpDuration / 1.2f).OnComplete(()=> enemyToKill.GetComponent<Animator>().SetInteger("state", 5));
+        sword.DOMove(swordTpPos, warpDuration / 1.2f).OnComplete(()=> SwordDoneFlying());
         sword.DOLookAt(swordTpPos, .2f, AxisConstraint.None);
 
         Vector3 tpPos = enemyToKill.transform.position + new Vector3(0,Y_OFFSET,5);
@@ -197,11 +198,10 @@ public class AttackMoveController : MonoBehaviour
         StopCoroutine(lastWarpRoutine);
         doneWarp = true;
 
+        //rb.constraints = RigidbodyConstraints.FreezePositionY;
+
         playerAnim.StrikeToHalf();
 
-        sword.parent = swordHand;
-        sword.localPosition = swordOrigPos;
-        sword.localEulerAngles = swordOrigRot;
         FinishAttack();
         //rotate straight
         DOTween.Kill(transform);
@@ -210,6 +210,19 @@ public class AttackMoveController : MonoBehaviour
         //enemyToKill.GetComponentInChildren<TargetScript>().DeadHighlight();
         enemyToKill.GetComponentInChildren<TargetScript>().DeleteEnemy();
         StartCoroutine(FixSword());
+    }
+
+    void SwordDoneFlying()
+    {
+        //enemyToKill.GetComponent<Animator>().SetInteger("state", 5);
+        sword.DOMoveZ(sword.transform.position.x - 3, 0.1f).OnComplete(()=> SwordBackInHand());
+        sword.DORotate(new Vector3(0, -180, 0), 0.05f);
+    }
+    void SwordBackInHand()
+    {
+        sword.parent = swordHand;
+        sword.localPosition = swordOrigPos;
+        sword.localEulerAngles = swordOrigRot;
     }
     //WARP END
 
@@ -220,7 +233,7 @@ public class AttackMoveController : MonoBehaviour
     {
         ShowBody(true);
 
-
+        
         isLocked = false;
         //Shake
         cameraController.ShakeCam();
