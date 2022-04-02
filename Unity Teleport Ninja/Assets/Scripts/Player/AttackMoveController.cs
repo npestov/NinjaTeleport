@@ -34,6 +34,7 @@ public class AttackMoveController : MonoBehaviour
     //Bonus
     public GameObject bonusSlicer;
     Rigidbody rb;
+    public GameObject manualSlicer;
 
     // Start is called before the first frame update
     void Awake()
@@ -106,11 +107,17 @@ public class AttackMoveController : MonoBehaviour
 
         Vector3 swordTpPos = enemyToKill.transform.position + swordShootOffset;
         // + new Vector3(Random.Range(-0.02f, 0.02f), 1.5f);
+
+        float distanceToEnemy = Vector3.Distance(transform.position, enemyToKill.transform.position);
+        warpDuration = Mathf.Sqrt(distanceToEnemy) / 25;
+
         sword.parent = null;
-        sword.DOMove(swordTpPos, warpDuration / 1.2f).OnComplete(() => SwordDoneFlying());
-        sword.DOLookAt(swordTpPos, .2f, AxisConstraint.None);
+        sword.DOMove(swordTpPos, warpDuration / 1.5f);
+        sword.DOLookAt(swordTpPos, .2f, AxisConstraint.None).OnComplete(()=> ManuallySlice(swordTpPos));
 
         Vector3 tpPos = enemyToKill.transform.position + new Vector3(0, Y_OFFSET, 5);
+
+        
 
         ShowBody(false);
         transform.DOMove(tpPos - new Vector3(0, Y_OFFSET, 0), warpDuration).SetEase(Ease.InExpo).OnComplete(() => DoneWarp());
@@ -120,28 +127,33 @@ public class AttackMoveController : MonoBehaviour
 
     }
 
+    //this is a backup call
+    void ManuallySlice(Vector3 tpPos)
+    {
+        var randomRotation = Quaternion.Euler(Random.Range(0, 360), Random.Range(0, 360), 0);
+        var manSlicerStartPos = tpPos + new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(0.8f, 2.2f), 0);
+        GameObject manSlicer = Instantiate(manualSlicer, manSlicerStartPos, transform.rotation);
+        manSlicer.transform.DOMoveZ(manSlicerStartPos.z - 3, 0.1f).OnComplete(() => Destroy(manSlicer));
+    }
+
     void DoneWarp()
     {
+        SwordBackInHand();
         //TEMP FIX
         playerAnim.StrikeToHalf();
         ShowBody(true);
         //rotate straight
         DOTween.Kill(transform);
         transform.DORotate(new Vector3(0, -180, 0), 1f);
-        enemyToKill.GetComponent<Animator>().SetInteger("state", 5);
-        enemyToKill.GetComponentInChildren<TargetScript>().DeleteEnemy();
-
         StartCoroutine(FixSword());
         cameraController.ShakeCam();
+        enemyToKill.GetComponentInChildren<TargetScript>().DeleteEnemy();
+        enemyToKill.GetComponent<Animator>().SetInteger("state", 5);
     }
 
-    void SwordDoneFlying()
-    {
-        sword.DOMoveZ(sword.transform.position.x - 3, 0.1f).OnComplete(() => SwordBackInHand());
-        sword.DORotate(new Vector3(0, -180, 0), 0.05f);
-    }
     void SwordBackInHand()
     {
+        Debug.Log("sword bakc in hand");
         sword.parent = swordHand;
         sword.localPosition = swordOrigPos;
         sword.localEulerAngles = swordOrigRot;
@@ -194,7 +206,7 @@ public class AttackMoveController : MonoBehaviour
         Transform myBonusTarget = GameObject.Find("BonusTarget").transform;
         yield return new WaitForSeconds(0.3f);
         sword.parent = null;
-        sword.DOMove(myBonusTarget.position, Mathf.Sqrt(endingBonus.targetIndex * 1.5f)).SetEase(Ease.InOutSine).OnComplete(() => BonusComplete());
+        sword.DOMove(myBonusTarget.position, Mathf.Sqrt(endingBonus.targetIndex * 2f)).SetEase(Ease.OutCubic).OnComplete(() => BonusComplete());
         sword.DOLookAt(myBonusTarget.position, .2f, AxisConstraint.None);
     }
 }
