@@ -34,6 +34,8 @@ public class LossScreenUI : MonoBehaviour
     void RestartClicked()
     {
         SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+        Destroy(btnRestart.gameObject);
+        Destroy(btnRestartTwo.gameObject);
     }
 
     public IEnumerator DisplayLossScreen()

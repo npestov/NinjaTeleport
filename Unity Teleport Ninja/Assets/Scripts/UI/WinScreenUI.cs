@@ -48,7 +48,7 @@ public class WinScreenUI : MonoBehaviour
         }
         SceneManager.LoadSceneAsync(levelIndex % SceneManager.sceneCountInBuildSettings);
         PlayerPrefs.SetInt("lvl", levelIndex);
-
+        Destroy(btnNext.gameObject);
     }
 
     public IEnumerator DisplayWinScreen()

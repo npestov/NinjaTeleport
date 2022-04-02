@@ -45399,7 +45399,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.46666667
-    functionName: Slash
+    functionName: Warp
     data: 
     objectReferenceParameter: {fileID: 1784294225945839324, guid: d23968cad688edb409c58bf395cee79c,
       type: 3}

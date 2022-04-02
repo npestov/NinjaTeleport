@@ -70,11 +70,8 @@ public class GameManager : MonoBehaviour
             case GameState.Aiming:
                 cameraController.SwitchToAim();
                 timeManager.DoSlowmotion();
-                //inGameUI.AimingUI();
                 break;
             case GameState.Killing:
-                //playerMovement.IncreaseSpeed();
-                //playerAnim.IncreaseAnimSpeed();
                 timeManager.RemoveSlowMotion();
                 cameraController.SwitchToWalk();
                 break;
@@ -83,7 +80,6 @@ public class GameManager : MonoBehaviour
             case GameState.Victory:
                 if (State == GameState.Victory)
                     break;
-                Debug.Log("VIC");
                 GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, PlayerPrefs.GetInt("lvl").ToString());
 
                 inGameUI.ShowMultiplier();
@@ -94,7 +90,6 @@ public class GameManager : MonoBehaviour
             case GameState.Lose:
                 if (State == GameState.Lose)
                     break;
-                Debug.Log("LOSSS");
                 GameAnalytics.NewProgressionEvent(GAProgressionStatus.Fail, PlayerPrefs.GetInt("lvl").ToString());
 
                 if (enemyHasWon)
