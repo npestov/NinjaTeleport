@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
 
     public bool levelStarted;
     public bool isBonus;
+    public bool dontRagdoll;
     private bool isStarting = false;
     public bool enemyHasWon; 
 

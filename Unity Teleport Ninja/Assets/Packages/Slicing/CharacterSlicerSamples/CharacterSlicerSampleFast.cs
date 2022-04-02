@@ -248,12 +248,12 @@ namespace BzKovSoft.CharacterSlicerSamples
 			}
 
 			// set rigid bodies as non kinematic
-			if (transform.tag != "bonus")
-				StartCoroutine(KinematicDelay(go, 0.25f));
+			if (transform.tag != "bonus" && GameManager.Instance.dontRagdoll)
+				StartCoroutine(KinematicDelay(go, 0.35f));
 			else
 				StartCoroutine(KinematicDelay(go, 0));
 		}
-		IEnumerator KinematicDelay(GameObject go, float delayTime)
+		public IEnumerator KinematicDelay(GameObject go, float delayTime)
         {
 			yield return new WaitForSeconds(delayTime);
 			var rigidsArr = go.GetComponentsInChildren<Rigidbody>();
@@ -265,6 +265,7 @@ namespace BzKovSoft.CharacterSlicerSamples
 			}
 			Destroy(go, 2);
 		}
+
 
 		static IEnumerator SmoothDepenetration(GameObject go, Vector3 velocityContinue, Vector3 angularVelocityContinue)
 		{

@@ -2,6 +2,7 @@
 using UnityEngine;
 using DG.Tweening;
 
+
 public class AttackMoveController : MonoBehaviour
 {
     public bool isAttackQueued;
@@ -102,6 +103,7 @@ public class AttackMoveController : MonoBehaviour
         if (GameManager.Instance.State == GameState.Lose || GameManager.Instance.isBonus)
             return;
 
+        GameManager.Instance.dontRagdoll = true;
         //rotate towards starget
         transform.DOLookAt(new Vector3(enemyToKill.transform.position.x, transform.position.y, enemyToKill.transform.position.z), 0.2f);
 
@@ -113,7 +115,8 @@ public class AttackMoveController : MonoBehaviour
 
         sword.parent = null;
         sword.DOMove(swordTpPos, warpDuration / 1.5f);
-        sword.DOLookAt(swordTpPos, .2f, AxisConstraint.None).OnComplete(()=> ManuallySlice(swordTpPos));
+        sword.DOLookAt(swordTpPos, .2f, AxisConstraint.None);
+        ManuallySlice(swordTpPos);
 
         Vector3 tpPos = enemyToKill.transform.position + new Vector3(0, Y_OFFSET, 5);
 
@@ -130,14 +133,15 @@ public class AttackMoveController : MonoBehaviour
     //this is a backup call
     void ManuallySlice(Vector3 tpPos)
     {
-        var randomRotation = Quaternion.Euler(Random.Range(0, 360), Random.Range(0, 360), 0);
+        var randomRotation = Quaternion.Euler(Random.Range(54, 120), 0, 0);
         var manSlicerStartPos = tpPos + new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(0.8f, 2.2f), 0);
-        GameObject manSlicer = Instantiate(manualSlicer, manSlicerStartPos, transform.rotation);
-        manSlicer.transform.DOMoveZ(manSlicerStartPos.z - 3, 0.1f).OnComplete(() => Destroy(manSlicer));
+        GameObject manSlicer = Instantiate(manualSlicer, manSlicerStartPos + new Vector3(0, 0, 1), randomRotation);
+        manSlicer.transform.DOMoveZ(manSlicerStartPos.z - 3, 0.2f).OnComplete(() => Destroy(manSlicer));
     }
 
     void DoneWarp()
     {
+        GameManager.Instance.dontRagdoll = false;
         SwordBackInHand();
         //TEMP FIX
         playerAnim.StrikeToHalf();
@@ -153,7 +157,6 @@ public class AttackMoveController : MonoBehaviour
 
     void SwordBackInHand()
     {
-        Debug.Log("sword bakc in hand");
         sword.parent = swordHand;
         sword.localPosition = swordOrigPos;
         sword.localEulerAngles = swordOrigRot;
