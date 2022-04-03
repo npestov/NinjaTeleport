@@ -34,7 +34,7 @@ public class EndingBonus : MonoBehaviour
         for (int i = 1; i < allBonus.Length; i++)
         {
             int j = i;
-            while (IsFirstCloser(allBonus[j], allBonus[j - 1]) && j > 0)
+            while (j > 0 && IsFirstCloser(allBonus[j], allBonus[j - 1]))
             {
                 GameObject temp = allBonus[j - 1];
                 allBonus[j - 1] = allBonus[j];
